@@ -9,15 +9,17 @@ const pool = new Pool({
 
 const cohortMonth = process.argv[2];
 
+const values = [cohortMonth];
+
 pool.query(`
 SELECT DISTINCT(teachers.name) as name, cohorts.name as cohort
 FROM teachers
 JOIN assistance_requests on teacher_id = teachers.id
 JOIN students ON students.id = student_id
 JOIN cohorts ON cohorts.id = cohort_id
-WHERE cohorts.name = '${cohortMonth}'
-ORDER BY teacher;
-`)
+WHERE cohorts.name = $1
+ORDER BY teachers.name;
+`, values)
 
   .then(res => {
     res.rows.forEach(user => {
